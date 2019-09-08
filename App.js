@@ -4,7 +4,7 @@ import Routes from './src/services/routes';
 const App = () => {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="dark-content" backgroundColor="#333" />
       <Routes />
     </>
   );

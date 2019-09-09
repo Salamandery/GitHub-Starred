@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import {
-  Keyboard
+  Keyboard,
+  ActivityIndicator,
 } from 'react-native';
+import proptypes from 'prop-types';
+import storage from '@react-native-community/async-storage';
 import api from '../../services/api';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -20,12 +23,42 @@ import {
 } from '../../Components';
 
 class Main extends Component {
+  static navigationOptions = {
+    title: 'Usuários'
+  }
+  static proptypes = {
+    navigation: proptypes.shape({
+      navigate: proptypes.func,
+    }).isRequired,
+
+  }
   state = {
     users: [],
     newUser: "",
+    loading: false,
+  }
+  async componentDidMount() {
+    const res = await storage.getItem('users');
+
+    if (res) {
+      this.setState({users: JSON.parse(res)});
+    }
+  }
+  componentDidUpdate(_, prevState) {
+    const { users } = this.state;
+    if(prevState.users !== users) {
+      storage.setItem('users', JSON.stringify(users));
+    }
+
+  }
+  handleNavigate = (user) => {
+    const { navigation } = this.props;
+
+    navigation.navigate('User', {user});
   }
   handleSubmit = async () => {
     const { newUser, users } = this.state;
+    this.setState({loading: true});
     const res = await api.get(`/users/${newUser}`);
 
     const data = {
@@ -37,13 +70,14 @@ class Main extends Component {
 
     this.setState({
       users: [...users, data],
-      newUser: ''
+      newUser: '',
+      loading: false
     });
 
     Keyboard.dismiss();
   }
   render() {
-    const { users, newUser } = this.state;
+    const { users, newUser, loading } = this.state;
     return (
       <Container>
         <Form>
@@ -57,20 +91,20 @@ class Main extends Component {
             returnKeyLabel="send"
             returnKeyType="send"
           />
-          <SubmitButton onPress={this.handleSubmit}>
-            <Icon name="add" size={20} color="#fff" />
+          <SubmitButton loading={loading} onPress={this.handleSubmit}>
+            { loading ? <ActivityIndicator color="#fff" /> : <Icon name="add" size={20} color="#fff" /> }
           </SubmitButton>
         </Form>
 
         <List
           data={users}
-          keyExtrator={user => user.login}
+          keyExtractor={item => item.login}
           renderItem={({item})=>(
             <User>
               <Avatar source={{ uri: item.avatar}} />
               <Name>{item.name}</Name>
               <Bio>{item.bio}</Bio>
-              <ProfileButton onPress={()=>({})}>
+              <ProfileButton onPress={() => this.handleNavigate(item)}>
                 <ProfileButtonText>Ver perfil</ProfileButtonText>
               </ProfileButton>
             </User>
@@ -80,8 +114,5 @@ class Main extends Component {
     );
   }
 };
-Main.navigationOptions = {
-  title: 'Usuários'
-}
 
 export default Main;

@@ -20,7 +20,8 @@ const StackNavigator = createStackNavigator({
     headerStyle: {
       backgroundColor: "#333",
     },
-  }
+  },
+  
 });
 
 const Container = createAppContainer(StackNavigator);

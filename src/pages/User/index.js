@@ -2,6 +2,9 @@ import React, {
   useEffect,
   useState
 } from 'react';
+import {
+  TouchableWithoutFeedback,
+} from 'react-native';
 import proptypes from 'prop-types';
 import {
   Container, 
@@ -44,15 +47,18 @@ class User extends React.Component {
     }
   }
   renderItem = ({item}) => {
-    console.log(item.owner.avatar_url)
     return(
-      <Starred>
-        <OwnerAvatar source={{uri: item.owner.avatar_url}} />
-        <Info>
-          <Title>{item.name}</Title>
-          <Author>{item.owner.login}</Author>
-        </Info>
-      </Starred>
+      <TouchableWithoutFeedback onPress={()=>{
+        this.props.navigation.navigate('WebView', {url: item.html_url, name: item.name})
+      }}>
+        <Starred>
+          <OwnerAvatar source={{uri: item.owner.avatar_url}} />
+          <Info>
+            <Title>{item.name}</Title>
+            <Author>{item.owner.login}</Author>
+          </Info>
+        </Starred>
+      </TouchableWithoutFeedback>
     )
   }
   render() {

@@ -86,7 +86,7 @@ class Main extends Component {
             onChangeText={text => this.setState({ newUser: text })}
             autoCorrect={false}
             autoCapitalize="none"
-            placeholder="Adicionar usuário"
+            placeholder="Adicionar um usuário do GitHub"
             onSubmitEditing={this.handleSubmit}
             returnKeyLabel="send"
             returnKeyType="send"

@@ -3,6 +3,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 
 import Main from '../pages/Main';
 import User from '../pages/User';
+import WebView from '../pages/WebView';
 
 const StackNavigator = createStackNavigator({
   Main: {
@@ -10,6 +11,9 @@ const StackNavigator = createStackNavigator({
   },
   User: {
     screen: User
+  },
+  WebView: {
+    screen: WebView
   },
 },
 {
